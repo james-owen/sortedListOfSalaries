@@ -1,3 +1,3 @@
 # sortedListOfSalaries
-npm install
+npm install  
 npm test
