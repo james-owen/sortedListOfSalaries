@@ -21,7 +21,6 @@ function sortedListOfSalaries(workers) {
 function getSalary(workers, worker) {
   let salary;
 
-  // check for FTE / Contractor / Manager
   if (worker[1] === "FTE") {
     salary = worker[3];
   }
@@ -31,10 +30,8 @@ function getSalary(workers, worker) {
   else if (worker[1] === "Manager") {
     const employeeIds = worker[3].split(',');
     
-    // get worker objects (change method for alternate ordering)
     const employeesArray = employeeIds.map((id)=> workers[id - 1]);
 
-    // get salary of worker
     salary = employeesArray.reduce((acc, curr) => acc += getSalary(workers, curr), 0);
   }
   return salary;
