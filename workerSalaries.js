@@ -28,24 +28,22 @@ function memoSalary() {
     if (cache[worker[0]]) {
       return cache[worker[0]];
     }
-  
-    if (worker[1] === "FTE") {
+
+  switch(worker[1]) {
+    case "FTE":
       salary = worker[3];
-    }
-    else if (worker[1] === "Contractor") {
+      break;
+    case "Contractor":
       salary = worker[3] * worker[4] * 52;
-    }
-    else if (worker[1] === "Manager") {
+      break;
+    case "Manager":
       const employeeIds = worker[3].split(',');
-      
       const employeesArray = employeeIds.map((id)=> workers[id - 1]);
-  
       salary = employeesArray.reduce((acc, curr) => acc += salaryFunction(workers, curr), 0);
-    }
+  }
     cache[worker[0]] = salary;
     return salary;
   }
-
   return salaryFunction;
 }
 
