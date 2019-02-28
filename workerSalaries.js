@@ -4,6 +4,7 @@
  */
 function sortedListOfSalaries(workers) {
   const salaries = [];
+  const getSalary = memoSalary();
 
   for (let i = 0; i < workers.length; i++) {
     salaries.push(getSalary(workers, workers[i]));
@@ -18,23 +19,35 @@ function sortedListOfSalaries(workers) {
  * @param {Object} workers - All workers
  * @param {Object} worker - The worker being considered
  */
-function getSalary(workers, worker) {
-  let salary;
+function memoSalary() {
+  const cache = {};
 
-  if (worker[1] === "FTE") {
-    salary = worker[3];
-  }
-  else if (worker[1] === "Contractor") {
-    salary = worker[3] * worker[4] * 52;
-  }
-  else if (worker[1] === "Manager") {
-    const employeeIds = worker[3].split(',');
-    
-    const employeesArray = employeeIds.map((id)=> workers[id - 1]);
+  function salaryFunction(workers, worker) {
+    let salary;
 
-    salary = employeesArray.reduce((acc, curr) => acc += getSalary(workers, curr), 0);
+    if (cache[worker[0]]) {
+      return cache[worker[0]];
+    }
+  
+    if (worker[1] === "FTE") {
+      salary = worker[3];
+    }
+    else if (worker[1] === "Contractor") {
+      salary = worker[3] * worker[4] * 52;
+    }
+    else if (worker[1] === "Manager") {
+      const employeeIds = worker[3].split(',');
+      
+      const employeesArray = employeeIds.map((id)=> workers[id - 1]);
+  
+      salary = employeesArray.reduce((acc, curr) => acc += salaryFunction(workers, curr), 0);
+    }
+    cache[worker[0]] = salary;
+    return salary;
   }
-  return salary;
+
+  return salaryFunction;
 }
+
 
 module.exports = sortedListOfSalaries;
